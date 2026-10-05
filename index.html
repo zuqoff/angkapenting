@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angka Penting Adventure!</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Tone.js for Sound Effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- SweetAlert2 for beautiful alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #FF3366; 
+            --secondary: #00CCFF; 
+            --accent: #FFCC00; 
+            --yellow-orange: #FF9900;
+            --success: #00FF66; 
+            --dark: #000000;
+            --light: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #ffffff;
+            background-image: 
+                linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            margin: 0;
+            overflow-x: hidden;
+            color: var(--dark);
+        }
+
+        h1, h2, h3, h4, h5, h6, .cartoon-font {
+            font-family: 'Fredoka One', cursive;
+            letter-spacing: 1px;
+        }
+
+        /* Title on Landing Page - Yellow with Black Outline */
+        .landing-title {
+            font-family: 'Fredoka One', cursive;
+            color: #FFCC00;
+            -webkit-text-stroke: 3px #000000;
+            text-shadow: 5px 5px 0px #000000;
+        }
+
+        /* Focus outline on input fields: Yellow-Orange */
+        .custom-input-focus:focus {
+            outline: none;
+            border-color: var(--yellow-orange) !important;
+            box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.4) !important;
+        }
+
+        /* 3D Button Style */
+        .btn-3d {
+            transition: all 0.1s;
+            box-shadow: 4px 6px 0px 0px #000;
+            border: 4px solid #000;
+            position: relative;
+            top: 0;
+            font-weight: 900;
+        }
+        .btn-3d:active {
+            top: 6px;
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+        .btn-3d:disabled {
+            background-color: #cbd5e1 !important;
+            color: #64748b !important;
+            cursor: not-allowed;
+            top: 6px;
+            box-shadow: 0px 0px 0px 0px #000;
+        }
+
+        /* Container styling */
+        .glass-panel {
+            background: rgba(255, 255, 255, 1);
+            border-radius: 24px;
+            box-shadow: 10px 10px 0px 0px #000;
+            border: 6px solid var(--dark);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 3s ease-in-out infinite; }
+
+        @keyframes pop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pop-in { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 14px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-left: 4px solid #000; }
+        ::-webkit-scrollbar-thumb { background: var(--secondary); border: 4px solid #000; border-radius: 10px;}
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .hidden { display: none !important; }
+
+        /* Nav Tabs */
+        .tab-btn {
+            background-color: white;
+            color: var(--dark);
+            border: 4px solid #000;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0;
+            transition: all 0.2s;
+            position: relative;
+            box-shadow: 4px -2px 0px 0px rgba(0,0,0,0.1);
+        }
+        .tab-btn.active {
+            background-color: var(--primary);
+            color: white;
+            padding-top: 1.2rem;
+            border-color: #000;
+            z-index: 10;
+        }
+
+        /* Interactive Digits */
+        .interactive-digit {
+            display: inline-block;
+            padding: 4px 12px;
+            margin: 0 3px;
+            border-radius: 12px;
+            background-color: white;
+            border: 4px solid #000;
+            box-shadow: 2px 4px 0px 0px #000;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 2rem;
+            transition: all 0.1s;
+            user-select: none;
+        }
+        .interactive-digit:active { box-shadow: 0px 0px 0px 0px #000; transform: translateY(4px); }
+        .digit-ap { background-color: var(--success) !important; color: #000; } 
+        .digit-bukan-ap { background-color: var(--primary) !important; color: white; text-shadow: 2px 2px 0px #000;} 
+
+        /* Quiz Styles */
+        .quiz-option {
+            transition: all 0.1s;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px 0px #000;
+        }
+        .quiz-option:hover { transform: translateY(-2px); box-shadow: 4px 6px 0px 0px #000; background-color: var(--accent); }
+        .quiz-option:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px #000; }
+        .quiz-option.selected { border-color: #000; background-color: var(--success); font-weight: 900; }
+        
+        .nav-square {
+            width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; font-weight: 900; cursor: pointer;
+            background: white; border: 4px solid #000;
+            box-shadow: 2px 4px 0px 0px #000;
+            transition: all 0.1s;
+        }
+        .nav-square:active { transform: translateY(4px); box-shadow: 0px 0px 0px 0px #000; }
+        .nav-square.answered { background-color: var(--secondary); color: #000; }
+        .nav-square.current { background-color: var(--accent); border-width: 4px; }
+
+        /* Board Game 100 Squares */
+        #game-board-100 {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            background: #000;
+            padding: 6px;
+            border-radius: 16px;
+            border: 6px solid #000;
+            box-shadow: 8px 8px 0px 0px rgba(0,0,0,1);
+            position: relative;
+        }
+        .board-cell-100 {
+            aspect-ratio: 1;
+            background: #fff;
+            border-radius: 6px;
+            border: 1.5px solid #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 900;
+            font-size: 0.65rem;
+            position: relative;
+            padding: 1px;
+            user-select: none;
+        }
+        .board-cell-100:nth-child(even) { background: #E0F2FE; }
+        .board-cell-100:nth-child(odd) { background: #FEF3C7; }
+
+        .player-token-node {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2px solid #000;
+            box-shadow: 0 2px 0 #000;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        /* Snake & Ladder SVG Overlay */
+        #snakes-ladders-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        #spinner-wheel {
+            transition: transform 2.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            border-radius: 50%;
+            border: 6px solid var(--dark);
+            box-shadow: 6px 6px 0px 0px #000;
+        }
+
+        /* Flip Card Memory Game */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .memory-card {
+            height: 100px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .memory-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+        }
+        .memory-card.flipped .memory-card-inner {
+            transform: rotateY(180deg);
+        }
+        .memory-card-front, .memory-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            border: 4px solid #000;
+            box-shadow: 4px 4px 0px 0px #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            font-weight: 900;
+        }
+        .memory-card-front {
+            background-color: var(--secondary);
+            color: white;
+            font-size: 2rem;
+        }
+        .memory-card-back {
+            background-color: #fff;
+            color: #000;
+            transform: rotateY(180deg);
+            font-size: 1.1rem;
+        }
+        .memory-card.matched .memory-card-back {
+            background-color: var(--success);
+            border-color: #000;
+        }
+
+        /* Clouds Background */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            border: 4px solid #000;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative">
+
+    <!-- Background Clouds -->
+    <div class="cloud top-10 left-10" style="width: 120px; height: 40px;"></div>
+    
+    <!-- LANDING PAGE -->
+    <div id="landing-page" class="flex-1 flex flex-col items-center justify-center p-4 z-10 absolute inset-0 backdrop-blur-sm overflow-y-auto">
+        <div class="text-center mb-6 pop-in">
+            <h1 class="landing-title text-4xl sm:text-6xl tracking-tight floating uppercase">ANGKA PENTING ADVENTURE</h1>
+            <p class="text-base sm:text-lg font-black text-black bg-white/90 px-4 py-1.5 rounded-full inline-block border-4 border-black shadow-[3px_3px_0_0_#000] mt-3">
+                <i class="fa-solid fa-graduation-cap text-[var(--primary)] mr-1"></i> Media Pembelajaran Interaktif Fisika
+            </p>
+        </div>
+
+        <div class="glass-panel max-w-md w-full p-8 text-center pop-in">
+            <h2 class="text-2xl font-black text-black mb-6 border-b-4 border-black pb-2 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-compass text-[var(--yellow-orange)]"></i> Form Penjelajah
+            </h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-left font-black mb-1 ml-2 text-black text-xl">Nama Penjelajah:</label>
+                    <input type="text" id="student-name" class="custom-input-focus w-full p-4 rounded-xl border-4 border-black shadow-[4px_4px_0_0_#000] text-xl font-bold transition-all" placeholder="Masukkan Namamu...">
+                </div>
+                <div>
+                    <label class="block text-left font-black mb-1 ml-2 text-black text-xl">Kelas:</label>
+                    <input type="text" id="student-class" class="custom-input-focus w-full p-4 rounded-xl border-4 border-black shadow-[4px_4px_0_0_#000] text-xl font-bold transition-all" placeholder="Contoh: X MIPA 1...">
+                </div>
+                <button onclick="enterApp()" class="btn-3d w-full bg-[var(--primary)] text-white text-2xl py-4 rounded-xl mt-6">
+                    <i class="fa-solid fa-rocket mr-2"></i> Mulai Petualangan!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="main-app" class="hidden flex-1 flex flex-col h-screen max-w-6xl mx-auto w-full p-2 sm:p-4 z-10">
+        
+        <!-- Header -->
+        <header class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-md border-b-4 border-gray-200 mb-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-[var(--accent)] p-2.5 rounded-2xl border-4 border-black shadow-[2px_2px_0_0_#000] text-2xl">
+                    <i class="fa-solid fa-ruler-combined text-[var(--dark)]"></i>
+                </div>
+                <div class="bg-[var(--accent)] border-4 border-black px-4 py-1.5 rounded-full text-black font-black text-xl tracking-wide shadow-[3px_3px_0_0_#000] hidden sm:block">
+                    ANGKA PENTING
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <div id="display-name" class="font-black text-lg text-[var(--primary)]">Nama Siswa</div>
+                    <div id="display-class" class="text-sm font-bold text-gray-700 bg-gray-200 px-3 py-0.5 rounded-full inline-block border-2 border-black">Kelas</div>
+                </div>
+                <button onclick="logout()" class="btn-3d bg-red-500 text-white w-11 h-11 rounded-full flex items-center justify-center" title="Keluar">
+                    <i class="fa-solid fa-right-from-bracket text-lg"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="flex overflow-x-auto gap-2 px-2 border-b-4 border-black mb-0 relative top-1">
+            <button id="btn-tab-materi" onclick="switchTab('tab-materi')" class="tab-btn active px-6 py-3 font-black text-lg"><i class="fa-solid fa-book mr-2"></i>Materi</button>
+            <button id="btn-tab-latihan" onclick="switchTab('tab-latihan')" class="tab-btn px-6 py-3 font-black text-lg"><i class="fa-solid fa-pen-nib mr-2"></i>Latihan</button>
+            <button id="btn-tab-game" onclick="switchTab('tab-game')" class="tab-btn px-6 py-3 font-black text-lg"><i class="fa-solid fa-dice mr-2"></i>Game</button>
+            <button id="btn-tab-tools" onclick="switchTab('tab-tools')" class="tab-btn px-6 py-3 font-black text-lg"><i class="fa-solid fa-calculator mr-2"></i>Kalkulator</button>
+        </nav>
+        
+        <main class="flex-1 glass-panel p-4 sm:p-6 overflow-y-auto mb-4 rounded-tl-none shadow-[10px_10px_0px_0px_#000]">
+            
+            <!-- TAB 1: MATERI -->
+            <div id="tab-materi" class="tab-content animate-fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl cartoon-font text-[var(--secondary)] mb-2" style="-webkit-text-stroke: 1.5px black; text-shadow: 3px 3px 0 #000;">Materi Angka Penting</h2>
+                    <p class="text-xl text-black font-black">Mari kita pelajari aturan-aturan ajaib dalam fisika!</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <!-- Aturan Dasar -->
+                    <div class="bg-blue-50 p-6 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000]">
+                        <h3 class="text-2xl font-black text-blue-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-scroll text-[var(--secondary)]"></i> Aturan Dasar</h3>
+                        <ul class="space-y-3 font-bold text-black text-base">
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-2 text-xl"></i> Semua angka bukan nol adalah Angka Penting (AP). (Contoh: 123 = 3 AP)</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-2 text-xl"></i> Angka nol di TENGAH angka bukan nol adalah AP. (Contoh: 205 = 3 AP)</li>
+                            <li class="flex items-start"><i class="fa-solid fa-times text-red-500 mt-1 mr-2 text-xl"></i> Angka nol di DEPAN angka bukan nol BUKAN AP. (Contoh: 0,05 = 1 AP)</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-2 text-xl"></i> Angka nol di BELAKANG tanda desimal dan mengikuti angka bukan nol adalah AP. (Contoh: 2,00 = 3 AP)</li>
+                            <li class="flex items-start"><i class="fa-solid fa-exclamation-triangle text-yellow-500 mt-1 mr-2 text-xl"></i> Angka nol di belakang angka bukan nol tanpa desimal BUKAN AP, kecuali diberi tanda khusus. (Contoh: 2500 = 2 AP)</li>
+                            <li class="flex items-start"><i class="fa-solid fa-check text-green-500 mt-1 mr-2 text-xl"></i> Pada Notasi Ilmiah (a × 10ⁿ), semua angka pada bilangan 'a' adalah Angka Penting. (Contoh: 2,50 × 10³ = 3 AP)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Operasi Hitung -->
+                    <div class="bg-yellow-50 p-6 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000]">
+                        <h3 class="text-2xl font-black text-yellow-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-calculator text-[var(--yellow-orange)]"></i> Operasi Hitung</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <h4 class="font-sans font-bold text-black text-xl border-b-2 border-black pb-1 mb-2">Penjumlahan & Pengurangan</h4>
+                                <p class="text-gray-900 font-semibold text-base">Hasil operasi hanya boleh memiliki <b>satu angka taksiran</b> (mengikuti jumlah desimal paling sedikit).</p>
+                                <p class="bg-white p-3 rounded-xl mt-2 text-center font-mono border-2 border-black font-bold text-lg">12,5 (1 desimal) + 1,23 (2 desimal) = 13,73 &rarr; <span class="text-red-600 font-black">13,7</span></p>
+                            </div>
+                            <div>
+                                <h4 class="font-sans font-bold text-black text-xl border-b-2 border-black pb-1 mb-2">Perkalian & Pembagian</h4>
+                                <p class="text-gray-900 font-semibold text-base">Hasil operasi memiliki jumlah Angka Penting yang <b>sama banyaknya dengan bilangan yang AP-nya paling sedikit</b>.</p>
+                                <p class="bg-white p-3 rounded-xl mt-2 text-center font-mono border-2 border-black font-bold text-lg">2,5 (2 AP) x 3,14 (3 AP) = 7,85 &rarr; <span class="text-blue-600 font-black">7,8</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ATURAN PEMBULATAN MATERI -->
+                <div class="bg-green-50 p-6 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000] mb-8">
+                    <h3 class="text-2xl font-black text-green-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-arrows-rotate text-green-600"></i> Aturan Pembulatan Angka Penting
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4 font-bold text-black text-base mb-6">
+                        <div class="bg-white p-4 rounded-xl border-2 border-black shadow-[2px_2px_0_0_#000]">
+                            <span class="text-green-600 text-lg font-black block mb-1">1. Lebih Besar dari 5</span>
+                            <p class="text-sm text-gray-800">Dibulatkan ke <b>ATAS</b> (ditambah 1).</p>
+                            <p class="font-mono bg-green-100 p-2 rounded mt-2 text-center text-sm">2,46 &rarr; <b>2,5</b> (untuk 2 AP)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border-2 border-black shadow-[2px_2px_0_0_#000]">
+                            <span class="text-red-600 text-lg font-black block mb-1">2. Lebih Kecil dari 5</span>
+                            <p class="text-sm text-gray-800">Dibulatkan ke <b>BAWAH</b> (tetap).</p>
+                            <p class="font-mono bg-red-100 p-2 rounded mt-2 text-center text-sm">2,43 &rarr; <b>2,4</b> (untuk 2 AP)</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl border-2 border-black shadow-[2px_2px_0_0_#000]">
+                            <span class="text-yellow-600 text-lg font-black block mb-1">3. Tepat Sama dengan 5</span>
+                            <p class="text-sm text-gray-800">Jika angka sebelumnya <b>GANJIL</b> &rarr; naik. Jika <b>GENAP</b> &rarr; tetap.</p>
+                            <p class="font-mono bg-yellow-100 p-2 rounded mt-2 text-center text-xs">2,35 &rarr; <b>2,4</b> (3 ganjil)<br>2,45 &rarr; <b>2,4</b> (4 genap)</p>
+                        </div>
+                    </div>
+
+                    <!-- Kasus Khusus 14,947 -->
+                    <div class="bg-white p-5 rounded-xl border-3 border-black shadow-[3px_3px_0_0_#000]">
+                        <h4 class="text-lg font-black text-purple-900 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 text-xl"></i> Kasus Khusus: Pembulatan Angka Seperti 14,947
+                        </h4>
+                        <p class="text-sm font-bold text-gray-800 leading-relaxed mb-3">
+                            <b>PENTING:</b> Hindari pembulatan ganda/berantai! Lihat <u>hanya 1 digit tepat di belakang batas pembulatan</u>.
+                        </p>
+                        <div class="grid sm:grid-cols-2 gap-3 font-mono text-sm font-bold">
+                            <div class="bg-purple-50 p-3 rounded-lg border-2 border-black">
+                                <span class="text-purple-900 font-black block mb-1">Dibulatkan ke 3 AP:</span>
+                                <p class="text-gray-900">14,9<b class="text-red-600">4</b>7 &rarr; <b class="text-green-700 text-base">14,9</b></p>
+                                <span class="text-xs text-gray-600 font-sans font-semibold">(Lihat digit setelah 9 yaitu <b>4</b>. Karena 4 &lt; 5, angka 9 tetap).</span>
+                            </div>
+                            <div class="bg-purple-50 p-3 rounded-lg border-2 border-black">
+                                <span class="text-purple-900 font-black block mb-1">Dibulatkan ke 2 AP:</span>
+                                <p class="text-gray-900">14,<b class="text-red-600">9</b>47 &rarr; <b class="text-blue-700 text-base">15</b></p>
+                                <span class="text-xs text-gray-600 font-sans font-semibold">(Lihat digit setelah 4 yaitu <b>9</b>. Karena 9 &gt; 5, angka 4 naik jadi 15).</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Section -->
+                <div class="bg-[#ffebf0] p-6 rounded-3xl border-4 border-black text-center mb-8 shadow-[8px_8px_0_0_#000]">
+                    <h3 class="text-3xl cartoon-font text-[var(--primary)] mb-2" style="-webkit-text-stroke: 1px black; text-shadow: 2px 2px 0 #000;">Uji Coba Interaktif!</h3>
+                    <p class="mb-4 font-black text-black text-lg">Klik setiap digit angka di bawah ini (termasuk nol paling depan) untuk melihat apakah ia Angka Penting!</p>
+                    
+                    <div id="interactive-demo-container" class="bg-white inline-flex items-center justify-center p-4 rounded-2xl border-4 border-black mb-6 shadow-inner flex-wrap gap-1"></div>
+                    
+                    <div class="mb-6">
+                        <button onclick="resetInteractiveDemo()" class="btn-3d bg-white border-2 border-black text-black px-4 py-2 rounded-xl font-black text-sm hover:bg-gray-100">
+                            <i class="fa-solid fa-rotate-left text-[var(--primary)] mr-1"></i> Reset Status
+                        </button>
+                    </div>
+
+                    <div class="flex justify-center gap-6 text-md font-black text-black">
+                        <span class="flex items-center gap-2"><div class="w-6 h-6 bg-[var(--success)] border-2 border-black rounded-md"></div> = Angka Penting</span>
+                        <span class="flex items-center gap-2"><div class="w-6 h-6 bg-[var(--primary)] border-2 border-black rounded-md"></div> = Bukan AP</span>
+                    </div>
+                </div>
+
+                <!-- Inspector with Scientific Notation -->
+                <div class="bg-white p-6 sm:p-10 rounded-3xl border-4 border-black text-center shadow-[8px_8px_0_0_#000]">
+                    <h3 class="text-3xl cartoon-font text-[var(--secondary)] mb-4" style="-webkit-text-stroke: 1px black; text-shadow: 2px 2px 0 #000;">Inspektur Angka</h3>
+                    <p class="mb-6 font-black text-gray-700">Masukkan angka untuk dihitung Angka Pentingnya secara otomatis!</p>
+                    
+                    <!-- Toggle Mode -->
+                    <div class="flex justify-center mb-8 gap-4">
+                        <button onclick="setInspectorMode('normal')" id="btn-mode-normal" class="btn-3d bg-[var(--accent)] px-6 py-3 rounded-xl text-lg border-4 border-black text-black">Angka Biasa</button>
+                        <button onclick="setInspectorMode('scientific')" id="btn-mode-sci" class="btn-3d bg-gray-200 px-6 py-3 rounded-xl text-lg border-4 border-black text-gray-700">Notasi Ilmiah</button>
+                    </div>
+
+                    <!-- Normal Mode -->
+                    <div id="inspector-normal" class="flex justify-center max-w-lg mx-auto">
+                        <input type="text" id="inspector-input" class="w-full p-4 rounded-l-2xl border-4 border-r-0 border-black focus:outline-none text-2xl font-black text-center shadow-[inset_0_4px_4px_rgba(0,0,0,0.1)]" placeholder="Contoh: 0.0450" oninput="analyzeNumber(this.value)">
+                        <div class="bg-[var(--accent)] border-4 border-black rounded-r-2xl p-4 flex items-center justify-center min-w-[100px]">
+                            <span id="inspector-result" class="text-4xl font-black text-black">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Scientific Mode -->
+                    <div id="inspector-sci" class="hidden flex flex-col sm:flex-row justify-center items-center max-w-2xl mx-auto gap-4">
+                        <input type="text" id="inspector-sci-a" class="w-full sm:w-1/2 p-4 rounded-2xl border-4 border-black focus:outline-none text-2xl font-black text-center" placeholder="a (contoh: 2.5)" oninput="analyzeSciNumber()">
+                        <span class="text-3xl font-black text-black"> x 10 </span>
+                        <div class="relative w-full sm:w-1/4">
+                            <input type="number" id="inspector-sci-n" class="w-full p-4 rounded-2xl border-4 border-black focus:outline-none text-xl font-black text-center" placeholder="n" oninput="analyzeSciNumber()">
+                            <span class="absolute -top-3 -right-2 bg-black text-white text-xs px-2 py-1 rounded-full font-bold">pangkat</span>
+                        </div>
+                        <div class="bg-[var(--success)] border-4 border-black rounded-2xl p-4 flex items-center justify-center min-w-[100px]">
+                            <span id="inspector-sci-result" class="text-4xl font-black text-black">-</span>
+                        </div>
+                    </div>
+
+                    <div id="inspector-breakdown" class="mt-6 font-black text-xl min-h-[40px] bg-gray-100 p-4 rounded-xl border-4 border-dashed border-gray-400 hidden"></div>
+
+                    <!-- Dynamic Clickable Digits Inspector Breakdown -->
+                    <div id="inspector-digit-breakdown-container" class="hidden mt-6 bg-blue-50 p-6 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000]">
+                        <h4 class="text-lg font-black text-blue-900 mb-2 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-hand-pointer text-[var(--primary)]"></i> Klik Setiap Digit Di Bawah Ini Untuk Mengetahui Alasannya:
+                        </h4>
+                        <div id="inspector-digits-row" class="flex flex-wrap justify-center items-center gap-2 my-4"></div>
+                        <div id="inspector-digit-detail" class="bg-white p-4 rounded-xl border-2 border-black text-base font-bold text-gray-800 transition-all min-h-[60px] flex items-center justify-center">
+                            Klik salah satu digit di atas untuk melihat alasannya!
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t-4 border-dashed border-gray-300">
+                        <button onclick="generateInspectorChallenge()" class="btn-3d bg-[var(--primary)] text-white font-black text-xl px-6 py-3 rounded-2xl shadow-[4px_4px_0_0_#000]">
+                            <i class="fa-solid fa-bolt mr-2"></i> Challenge Angka!
+                        </button>
+
+                        <div id="inspector-challenge-box" class="hidden mt-6 bg-yellow-50 p-6 rounded-2xl border-4 border-black shadow-[6px_6px_0_0_#000] text-center max-w-lg mx-auto">
+                            <p class="font-black text-black text-lg mb-2">
+                                <i class="fa-solid fa-circle-question text-[var(--primary)] mr-1"></i> 
+                                Coba cek ada berapa angka penting di bilangan berikut:
+                            </p>
+                            <div id="challenge-number-display" class="text-4xl sm:text-5xl font-black text-[var(--primary)] my-3 bg-white p-4 rounded-xl border-4 border-black shadow-inner tracking-wider">
+                                0.000
+                            </div>
+
+                            <div class="flex justify-center items-center gap-2 mt-4">
+                                <input type="number" id="challenge-user-input" class="w-28 p-3 rounded-xl border-4 border-black text-center font-black text-2xl" placeholder="?" min="0">
+                                <button onclick="checkChallengeAnswer()" class="btn-3d bg-[var(--success)] text-black font-black text-lg px-5 py-3 rounded-xl">
+                                    Cek Jawaban
+                                </button>
+                            </div>
+
+                            <div id="challenge-feedback" class="hidden mt-4 p-3 rounded-xl border-3 font-black text-base"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: LATIHAN (QUIZ) -->
+            <div id="tab-latihan" class="tab-content hidden h-full flex flex-col">
+                <div id="quiz-intro" class="text-center py-10">
+                    <h2 class="text-5xl cartoon-font text-[var(--primary)] mb-4" style="-webkit-text-stroke: 1.5px black; text-shadow: 3px 3px 0 #000;">Ujian Ketangkasan!</h2>
+                    <p class="text-2xl font-black text-black mb-8 max-w-lg mx-auto">Selesaikan 10 soal pilihan ganda secara acak. Buktikan kamu master Angka Penting!</p>
+                    <button onclick="startQuiz()" class="btn-3d bg-[var(--primary)] text-white text-3xl py-4 px-10 rounded-2xl">
+                        Mulai Kuis!
+                    </button>
+                </div>
+
+                <div id="quiz-container" class="hidden flex-1 flex flex-col md:flex-row gap-6">
+                    <!-- Sidebar Nav -->
+                    <div class="md:w-1/4 bg-gray-100 p-4 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000] flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-black text-center mb-4 text-black text-lg uppercase tracking-wider">Navigasi Soal</h3>
+                            <div id="quiz-nav" class="flex flex-wrap gap-3 justify-center"></div>
+                        </div>
+
+                        <!-- Quiz Actions -->
+                        <div class="space-y-3 mt-6">
+                            <button onclick="finishQuiz()" class="btn-3d w-full bg-[var(--success)] text-black font-black text-lg py-3 rounded-xl">
+                                <i class="fa-solid fa-flag-checkered mr-2"></i> Selesai & Kirim
+                            </button>
+                            <button onclick="confirmResetQuiz()" class="btn-3d w-full bg-red-500 text-white font-black text-base py-2.5 rounded-xl">
+                                <i class="fa-solid fa-rotate-right mr-2"></i> Reset / Ulang Kuis
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Question Area -->
+                    <div class="md:w-3/4 bg-white p-6 rounded-3xl border-6 border-black shadow-[8px_8px_0_0_#000] flex flex-col relative">
+                        <div class="flex justify-between items-center mb-6 border-b-4 border-black pb-4">
+                            <span class="bg-[var(--secondary)] text-black border-2 border-black px-4 py-2 rounded-full font-black text-lg shadow-[2px_2px_0_0_#000]" id="q-number-display">Soal 1 / 10</span>
+                            <span class="text-black font-black text-lg"><i class="fa-solid fa-clock text-[var(--primary)]"></i> Fokus!</span>
+                        </div>
+                        
+                        <div id="question-text" class="text-2xl font-black text-black mb-8 flex-1">
+                            Pertanyaan akan muncul di sini...
+                        </div>
+
+                        <div id="options-container" class="space-y-4 mb-8"></div>
+
+                        <div class="flex justify-between mt-auto">
+                            <button onclick="prevQuestion()" id="btn-prev" class="btn-3d bg-gray-300 text-black px-6 py-3 rounded-xl font-black text-lg">
+                                <i class="fa-solid fa-arrow-left mr-2"></i> Sebelumnya
+                            </button>
+                            <button onclick="nextQuestion()" id="btn-next" class="btn-3d bg-[var(--accent)] text-black px-6 py-3 rounded-xl font-black text-lg">
+                                Selanjutnya <i class="fa-solid fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Result -->
+                <div id="quiz-result" class="hidden text-center py-10 flex flex-col items-center justify-center">
+                    <h2 class="text-5xl cartoon-font text-[var(--success)] mb-2" style="-webkit-text-stroke: 1.5px black; text-shadow: 3px 3px 0 #000;">Kuis Selesai!</h2>
+                    <div class="w-48 h-48 rounded-full border-8 border-black flex flex-col items-center justify-center my-6 shadow-[8px_8px_0_0_#000] relative bg-[var(--accent)]">
+                        <span class="text-xl font-black text-black absolute top-6 bg-white px-3 py-1 rounded-full border-2 border-black">Skor Kamu</span>
+                        <span id="final-score" class="text-7xl font-black text-black mt-4" style="text-shadow: 3px 3px 0 #fff;">0</span>
+                    </div>
+                    <p id="result-message" class="text-2xl font-black text-black mb-4"></p>
+                    <p class="text-lg text-black bg-[var(--success)] border-4 border-black px-6 py-3 rounded-xl font-black mb-8 shadow-[4px_4px_0_0_#000]">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Data berhasil tersimpan!
+                    </p>
+                    <button onclick="resetQuiz()" class="btn-3d bg-[var(--secondary)] text-black text-2xl py-4 px-10 rounded-xl">
+                        Coba Lagi
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 3: GAME -->
+            <div id="tab-game" class="tab-content hidden">
+                <div class="text-center mb-6">
+                    <h2 class="text-4xl cartoon-font text-[var(--accent)] mb-2" style="-webkit-text-stroke: 1.5px black; text-shadow: 3px 3px 0 #000;">Arena Permainan</h2>
+                    <p class="font-black text-black text-lg">Pilih mode permainan yang ingin kamu mainkan!</p>
+                    
+                    <div class="flex justify-center gap-4 mt-4">
+                        <button onclick="switchGameMode('snake')" id="btn-mode-snake" class="btn-3d bg-[var(--accent)] text-black px-6 py-3 rounded-xl text-lg font-black">
+                            <i class="fa-solid fa-chess-board mr-2"></i> Ular Tangga 100 Kotak
+                        </button>
+                        <button onclick="switchGameMode('flip')" id="btn-mode-flip" class="btn-3d bg-gray-200 text-gray-700 px-6 py-3 rounded-xl text-lg font-black">
+                            <i class="fa-solid fa-clone mr-2"></i> Menjodohkan Kartu (Flip)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- GAME 1: ULAR TANGGA -->
+                <div id="game-snake-container" class="space-y-6">
+                    <div class="bg-white p-4 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000] flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <span class="font-black text-lg text-black"><i class="fa-solid fa-users text-[var(--primary)]"></i> Jumlah Pemain:</span>
+                            <div class="flex gap-2">
+                                <button onclick="setPlayerCount(1)" id="btn-p1" class="btn-3d bg-[var(--accent)] text-black px-4 py-2 rounded-lg font-black">1</button>
+                                <button onclick="setPlayerCount(2)" id="btn-p2" class="btn-3d bg-gray-200 text-black px-4 py-2 rounded-lg font-black">2</button>
+                                <button onclick="setPlayerCount(3)" id="btn-p3" class="btn-3d bg-gray-200 text-black px-4 py-2 rounded-lg font-black">3</button>
+                                <button onclick="setPlayerCount(4)" id="btn-p4" class="btn-3d bg-gray-200 text-black px-4 py-2 rounded-lg font-black">4</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <span id="current-turn-badge" class="bg-[var(--primary)] text-white px-4 py-2 rounded-xl border-2 border-black font-black">
+                                Giliran: Pemain 1
+                            </span>
+                            <button onclick="resetSnakeGame()" class="btn-3d bg-red-400 text-black px-3 py-1.5 rounded-lg font-black text-sm">
+                                <i class="fa-solid fa-rotate-left"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col lg:flex-row gap-6 items-start">
+                        <div class="w-full lg:w-2/3 flex justify-center">
+                            <div id="game-board-100" class="relative">
+                                <svg id="snakes-ladders-svg"></svg>
+                            </div>
+                        </div>
+
+                        <div class="w-full lg:w-1/3 bg-white p-6 rounded-3xl border-6 border-black shadow-[8px_8px_0_0_#000] text-center flex flex-col items-center">
+                            <div class="mb-6 w-full">
+                                <p class="font-black text-black mb-2 uppercase text-base">Kocok Dadu</p>
+                                <button onclick="rollDice()" id="btn-roll-dice" class="btn-3d bg-[var(--primary)] text-white text-3xl py-4 px-8 rounded-2xl w-full flex items-center justify-center gap-3">
+                                    <i class="fa-solid fa-dice-five text-4xl"></i>
+                                    <span id="dice-result-text">Lempar Dadu!</span>
+                                </button>
+                            </div>
+
+                            <div class="relative w-44 h-44 mb-6">
+                                <div id="spinner-wheel" class="w-full h-full rounded-full flex items-center justify-center text-3xl bg-gradient-to-tr from-[var(--secondary)] to-[var(--accent)] relative overflow-hidden border-4 border-black">
+                                    <div class="absolute w-full h-1.5 bg-black"></div>
+                                    <div class="absolute w-1.5 h-full bg-black"></div>
+                                    <span id="spinner-result" class="font-black text-white text-6xl drop-shadow-md z-10" style="-webkit-text-stroke: 2px black;">?</span>
+                                </div>
+                                <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 text-5xl text-red-500 z-20">
+                                    <i class="fa-solid fa-caret-down"></i>
+                                </div>
+                            </div>
+                            
+                            <p class="text-sm font-black text-gray-700 mb-4 bg-yellow-100 p-2 rounded-xl border-2 border-black">
+                                <i class="fa-solid fa-circle-info text-yellow-600"></i> Jika menjawab kuis dengan BENAR akan MAJU (spinner), jika SALAH akan MUNDUR (spinner)!
+                            </p>
+
+                            <div id="player-status-container" class="w-full space-y-2 text-left"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAME 2: FLIP CARD -->
+                <div id="game-flip-container" class="hidden space-y-6">
+                    <div class="bg-blue-100 p-4 sm:p-5 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000] text-center">
+                        <p class="font-black text-blue-900 text-base sm:text-lg">
+                            <i class="fa-solid fa-circle-info text-blue-600 text-xl mr-2"></i> 
+                            <b>Instruksi Permainan:</b> Jodohkan kartu soal dengan kartu jawaban yang sesuai!
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border-4 border-black shadow-[4px_4px_0_0_#000] flex justify-between items-center">
+                        <div class="font-black text-lg text-black">
+                            <i class="fa-solid fa-trophy text-[var(--accent)]"></i> Percobaan: <span id="flip-moves" class="text-[var(--primary)]">0</span>
+                        </div>
+                        <button onclick="initFlipGame()" class="btn-3d bg-[var(--secondary)] text-white px-6 py-2 rounded-xl font-black">
+                            <i class="fa-solid fa-rotate-right mr-1"></i> Acak Kartu Baru
+                        </button>
+                    </div>
+
+                    <div id="memory-grid" class="memory-grid"></div>
+                </div>
+            </div>
+
+            <!-- TAB 4: TOOLS (KALKULATOR) -->
+            <div id="tab-tools" class="tab-content hidden">
+                 <div class="text-center mb-8">
+                    <h2 class="text-5xl cartoon-font text-[var(--success)] mb-2" style="-webkit-text-stroke: 1.5px black; text-shadow: 3px 3px 0 #000;">Kalkulator Pintar</h2>
+                    <p class="font-black text-black text-xl">Menghitung dengan aturan Angka Penting otomatis!</p>
+                </div>
+
+                <div class="max-w-3xl mx-auto bg-white p-6 sm:p-10 rounded-3xl border-6 border-black shadow-[10px_10px_0_0_#000]">
+                    <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-6 items-center mb-8">
+                        <div>
+                            <label class="block font-black text-black mb-2 text-lg text-center">Bilangan 1</label>
+                            <input type="number" step="any" id="calc-val1" class="w-full p-4 rounded-2xl border-4 border-black focus:outline-none text-2xl font-black text-center" placeholder="0">
+                            <div id="calc-ap1" class="text-sm text-center mt-2 text-[var(--primary)] font-black min-h-[20px]"></div>
+                        </div>
+                        
+                        <div class="flex sm:flex-col gap-3 justify-center">
+                            <button onclick="setCalcOp('+')" id="btn-op-add" class="calc-op-btn btn-3d w-14 h-14 rounded-2xl bg-[var(--primary)] text-white font-black text-3xl">+</button>
+                            <button onclick="setCalcOp('-')" id="btn-op-sub" class="calc-op-btn btn-3d w-14 h-14 rounded-2xl bg-white text-black font-black text-3xl">-</button>
+                            <button onclick="setCalcOp('x')" id="btn-op-mul" class="calc-op-btn btn-3d w-14 h-14 rounded-2xl bg-white text-black font-black text-3xl">x</button>
+                            <button onclick="setCalcOp('/')" id="btn-op-div" class="calc-op-btn btn-3d w-14 h-14 rounded-2xl bg-white text-black font-black text-3xl">/</button>
+                        </div>
+
+                        <div>
+                            <label class="block font-black text-black mb-2 text-lg text-center">Bilangan 2</label>
+                            <input type="number" step="any" id="calc-val2" class="w-full p-4 rounded-2xl border-4 border-black focus:outline-none text-2xl font-black text-center" placeholder="0">
+                            <div id="calc-ap2" class="text-sm text-center mt-2 text-[var(--primary)] font-black min-h-[20px]"></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculateAP()" class="btn-3d w-full bg-[var(--secondary)] text-white text-3xl py-4 rounded-xl mb-8">
+                        <i class="fa-solid fa-equals mr-2"></i> Hitung
+                    </button>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-100 p-6 rounded-2xl border-4 border-black text-center relative overflow-hidden shadow-[4px_4px_0_0_#000]">
+                            <div class="absolute top-0 right-0 bg-gray-700 text-white text-xs font-black px-3 py-1 rounded-bl-xl border-l-2 border-b-2 border-black">KALKULATOR BIASA</div>
+                            <p class="text-base font-black text-gray-700 mb-1 uppercase tracking-wider">Hasil Perhitungan Asli</p>
+                            <div id="calc-raw-result" class="text-4xl font-black text-gray-900 my-2 break-words">-</div>
+                            <span class="text-xs font-bold text-gray-600 bg-white px-3 py-1 rounded-full border border-gray-400 inline-block">Belum disesuaikan AP</span>
+                        </div>
+
+                        <div class="bg-[var(--accent)] p-6 rounded-2xl border-4 border-black text-center relative overflow-hidden shadow-[6px_6px_0_0_#000]">
+                            <div class="absolute top-0 right-0 bg-black text-white text-xs font-black px-3 py-1 rounded-bl-xl border-l-2 border-b-2 border-black">ATURAN AP</div>
+                            <p class="text-base font-black text-black mb-1 uppercase tracking-wider">Hasil Sesuai Angka Penting</p>
+                            <div id="calc-result" class="text-4xl sm:text-5xl font-black text-white my-2 break-words" style="-webkit-text-stroke: 1.5px black; text-shadow: 3px 3px 0 #000;">-</div>
+                            <span class="text-xs font-bold text-black bg-white px-3 py-1 rounded-full border-2 border-black inline-block">Sudah sesuai aturan AP</span>
+                        </div>
+                    </div>
+
+                    <div id="calc-explanation" class="w-full text-center text-lg font-black text-black bg-white p-4 rounded-xl border-4 border-black block shadow-[4px_4px_0_0_#000]">Menunggu input...</div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Endpoint Google Apps Script Web App
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysElkeLRBP6ACNFpAc7DQbg7oG6gKs7e7p5H_I7X9dpBQHX-SCogNV00awRZqs_yAPyg/exec";
+
+        // State Management
+        let studentInfo = { name: '', class: '' };
+        let activeOp = '+'; 
+        
+        // Sound Engine (Tone.js)
+        const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+        const clickSound = () => { try { synth.triggerAttackRelease("C5", "32n"); } catch(e){} };
+        const popSound = () => { try { synth.triggerAttackRelease("G5", "16n"); } catch(e){} };
+        const successSound = () => { try { synth.triggerAttackRelease(["C5", "E5", "G5"], "8n"); } catch(e){} };
+        const failSound = () => { try { synth.triggerAttackRelease("C3", "4n"); } catch(e){} };
+
+        const vibrate = (pattern = 50) => {
+            if (navigator.vibrate) navigator.vibrate(pattern);
+        };
+
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                clickSound();
+                vibrate(20);
+            });
+        });
+
+        // 1. LANDING PAGE & NAVIGATION
+        function enterApp() {
+            const name = document.getElementById('student-name').value.trim();
+            const cls = document.getElementById('student-class').value.trim();
+
+            if (!name || !cls) {
+                Swal.fire({ icon: 'warning', title: 'Oops!', text: 'Isi nama dan kelas dulu ya!', confirmButtonColor: '#FF6B6B' });
+                return;
+            }
+
+            studentInfo = { name, class: cls };
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-class').textContent = cls;
+
+            document.getElementById('landing-page').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            successSound();
+            initInteractiveDemo();
+            initSnakeGame();
+            initFlipGame();
+        }
+
+        function logout() {
+            Swal.fire({
+                title: 'Keluar?', text: "Progres kamu tidak akan tersimpan.", icon: 'question',
+                showCancelButton: true, confirmButtonColor: '#4ECDC4', cancelButtonColor: '#FF6B6B', confirmButtonText: 'Ya, Keluar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('main-app').classList.add('hidden');
+                    document.getElementById('landing-page').classList.remove('hidden');
+                    document.getElementById('student-name').value = '';
+                    document.getElementById('student-class').value = '';
+                }
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById('btn-' + tabId).classList.add('active');
+            popSound();
+
+            if(tabId === 'tab-game') {
+                setTimeout(drawSnakesAndLaddersSVG, 200);
+            }
+        }
+
+        // 2. MATERI & INTERACTIVE DEMO LOGIC
+        function countSignificantFigures(numStr) {
+            numStr = numStr.trim().replace(/,/g, '.');
+            if (!numStr || isNaN(numStr)) return { count: 0, desc: "Bukan angka valid", apDigits: "" };
+
+            let str = numStr;
+            let isDecimal = str.includes('.');
+            if (str.startsWith('-')) str = str.substring(1);
+
+            let firstNonZeroIndex = -1;
+            let lastNonZeroIndex = -1;
+
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] !== '.' && str[i] !== '0') {
+                    if (firstNonZeroIndex === -1) firstNonZeroIndex = i;
+                    lastNonZeroIndex = i;
+                }
+            }
+
+            if (firstNonZeroIndex === -1) return { count: 0, desc: "Hanya angka nol", apDigits: "" };
+
+            let apCount = 0;
+            let apString = "";
+            let explanation = "";
+
+            if (isDecimal) {
+                let countStr = str.substring(firstNonZeroIndex).replace('.', '');
+                apCount = countStr.length;
+                apString = str.substring(firstNonZeroIndex);
+                explanation = "Ada desimal: Hitung semua angka dari angka bukan nol pertama ke kanan.";
+            } else {
+                let countStr = str.substring(firstNonZeroIndex, lastNonZeroIndex + 1);
+                apCount = countStr.length;
+                apString = str.substring(firstNonZeroIndex, lastNonZeroIndex + 1);
+                explanation = "Tanpa desimal: Angka nol paling belakang tidak dihitung.";
+            }
+
+            return { count: apCount, desc: explanation, apDigits: apString };
+        }
+
+        let activeInteractiveDigit = null;
+
+        function initInteractiveDemo() {
+            const container = document.getElementById('interactive-demo-container');
+            container.innerHTML = '';
+            
+            const numStr = "0.04050";
+            const types = ['bukan-ap', 'text', 'bukan-ap', 'ap', 'ap', 'ap', 'ap'];
+
+            for(let i=0; i<numStr.length; i++) {
+                let char = numStr[i];
+                if(char === '.') {
+                    let commaSpan = document.createElement('span');
+                    commaSpan.className = 'text-4xl font-black mx-1 text-black select-none';
+                    commaSpan.innerText = ',';
+                    container.appendChild(commaSpan);
+                } else {
+                    let span = document.createElement('span');
+                    span.className = 'interactive-digit';
+                    span.innerText = char;
+                    span.dataset.type = types[i];
+                    
+                    span.onclick = function() {
+                        if (activeInteractiveDigit && activeInteractiveDigit !== this) {
+                            activeInteractiveDigit.classList.remove('digit-ap', 'digit-bukan-ap');
+                        }
+                        activeInteractiveDigit = this;
+                        this.classList.remove('digit-ap', 'digit-bukan-ap');
+                        
+                        if(this.dataset.type === 'ap') {
+                            this.classList.add('digit-ap');
+                            successSound();
+                            vibrate(30);
+                        } else {
+                            this.classList.add('digit-bukan-ap');
+                            failSound();
+                            vibrate([30, 50, 30]);
+                        }
+                    };
+                    container.appendChild(span);
+                }
+            }
+        }
+
+        function resetInteractiveDemo() {
+            clickSound();
+            document.querySelectorAll('.interactive-digit').forEach(el => {
+                el.classList.remove('digit-ap', 'digit-bukan-ap');
+            });
+            activeInteractiveDigit = null;
+        }
+
+        function setInspectorMode(mode) {
+            const btnNormal = document.getElementById('btn-mode-normal');
+            const btnSci = document.getElementById('btn-mode-sci');
+            const divNormal = document.getElementById('inspector-normal');
+            const divSci = document.getElementById('inspector-sci');
+            const breakdown = document.getElementById('inspector-breakdown');
+
+            clickSound();
+            breakdown.classList.add('hidden');
+
+            if (mode === 'normal') {
+                btnNormal.classList.replace('bg-gray-200', 'bg-[var(--accent)]');
+                btnNormal.classList.replace('text-gray-700', 'text-black');
+                btnSci.classList.replace('bg-[var(--accent)]', 'bg-gray-200');
+                btnSci.classList.replace('text-black', 'text-gray-700');
+                
+                divNormal.classList.remove('hidden');
+                divNormal.classList.add('flex');
+                divSci.classList.add('hidden');
+                divSci.classList.remove('flex');
+                
+                document.getElementById('inspector-input').value = '';
+                analyzeNumber('');
+            } else {
+                btnSci.classList.replace('bg-gray-200', 'bg-[var(--accent)]');
+                btnSci.classList.replace('text-gray-700', 'text-black');
+                btnNormal.classList.replace('bg-[var(--accent)]', 'bg-gray-200');
+                btnNormal.classList.replace('text-black', 'text-gray-700');
+                
+                divSci.classList.remove('hidden');
+                divSci.classList.add('flex');
+                divNormal.classList.add('hidden');
+                divNormal.classList.remove('flex');
+                
+                document.getElementById('inspector-sci-a').value = '';
+                document.getElementById('inspector-sci-n').value = '';
+                analyzeSciNumber();
+            }
+        }
+
+        function analyzeSciNumber() {
+            const aVal = document.getElementById('inspector-sci-a').value;
+            const nVal = document.getElementById('inspector-sci-n').value;
+            const resDisplay = document.getElementById('inspector-sci-result');
+            const breakdown = document.getElementById('inspector-breakdown');
+
+            if (aVal === '') {
+                resDisplay.innerText = '-';
+                breakdown.classList.add('hidden');
+                renderInspectorDigitBreakdown('');
+                return;
+            }
+
+            breakdown.classList.remove('hidden');
+            const res = countSignificantFigures(aVal);
+            
+            if(res.count === 0 && res.desc === "Bukan angka valid") {
+                resDisplay.innerText = 'Err';
+                resDisplay.className = "text-4xl font-black text-red-500";
+                breakdown.innerHTML = `<span class="text-red-500">Masukkan angka 'a' yang valid.</span>`;
+                renderInspectorDigitBreakdown('');
+            } else {
+                resDisplay.innerText = res.count;
+                resDisplay.className = "text-4xl font-black text-black";
+                breakdown.innerHTML = `<span class="text-[var(--primary)] text-lg">Pada notasi ilmiah (a × 10ⁿ), Angka Penting hanya ditentukan oleh bilangan "a".</span> <br><span class="text-md font-bold text-gray-700">Angka pentingnya adalah: <b class="text-black text-xl bg-yellow-200 px-2 py-1 rounded border-2 border-black">${res.apDigits}</b></span>`;
+                renderInspectorDigitBreakdown(aVal, true, nVal);
+            }
+        }
+
+        function analyzeNumber(val) {
+            const resDisplay = document.getElementById('inspector-result');
+            const breakdown = document.getElementById('inspector-breakdown');
+            
+            if(val === '') {
+                resDisplay.innerText = '-';
+                breakdown.classList.add('hidden');
+                renderInspectorDigitBreakdown('');
+                return;
+            }
+
+            breakdown.classList.remove('hidden');
+            const res = countSignificantFigures(val);
+            if(res.count === 0 && res.desc === "Bukan angka valid") {
+                resDisplay.innerText = 'Err';
+                resDisplay.className = "text-4xl font-black text-red-500";
+                breakdown.innerHTML = `<span class="text-red-500">Masukkan angka yang valid.</span>`;
+                renderInspectorDigitBreakdown('');
+            } else {
+                resDisplay.innerText = res.count;
+                resDisplay.className = "text-4xl font-black text-black";
+                breakdown.innerHTML = `<span class="text-[var(--primary)]">${res.desc}</span> <br><span class="text-md font-bold text-gray-700">Angka pentingnya adalah: <b class="text-black text-xl bg-yellow-200 px-2 py-1 rounded border-2 border-black">${res.apDigits}</b></span>`;
+                renderInspectorDigitBreakdown(val, false);
+            }
+        }
+
+        function getDigitAnalysisList(numStr) {
+            let rawStr = numStr.trim().replace(/,/g, '.');
+            let items = [];
+            if (!rawStr) return items;
+
+            let str = rawStr;
+            let isNegative = str.startsWith('-');
+            if (isNegative) str = str.substring(1);
+
+            let hasDecimal = str.includes('.');
+            let firstNonZeroIdx = -1;
+            let lastNonZeroIdx = -1;
+
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] !== '.' && str[i] !== '0') {
+                    if (firstNonZeroIdx === -1) firstNonZeroIdx = i;
+                    lastNonZeroIdx = i;
+                }
+            }
+
+            for (let i = 0; i < str.length; i++) {
+                let char = str[i];
+                let type = "";
+                let reason = "";
+
+                if (char === '.') {
+                    type = "decimal";
+                    reason = "Tanda desimal (koma): Berfungsi sebagai pemisah bagian bulat dan desimal.";
+                } else if (char !== '0') {
+                    type = "ap";
+                    reason = `Angka '${char}' adalah angka bukan nol. Semua angka bukan nol (1-9) pasti merupakan Angka Penting.`;
+                } else {
+                    if (firstNonZeroIdx === -1) {
+                        type = "bukan-ap";
+                        reason = "Angka '0' ini BUKAN Angka Penting karena seluruh bilangan hanya terdiri dari angka nol.";
+                    } else if (i < firstNonZeroIdx) {
+                        type = "bukan-ap";
+                        reason = "Angka '0' di DEPAN angka bukan nol pertama BUKAN Angka Penting.";
+                    } else if (i > firstNonZeroIdx && i < lastNonZeroIdx) {
+                        type = "ap";
+                        reason = "Angka '0' di TENGAH (diapit dua angka bukan nol) merupakan Angka Penting.";
+                    } else if (i > lastNonZeroIdx) {
+                        if (hasDecimal) {
+                            type = "ap";
+                            reason = "Angka '0' di BELAKANG tanda desimal yang mengikuti angka bukan nol merupakan Angka Penting.";
+                        } else {
+                            type = "bukan-ap";
+                            reason = "Angka '0' di BELAKANG angka bukan nol pada bilangan bulat tanpa desimal BUKAN Angka Penting.";
+                        }
+                    }
+                }
+
+                items.push({
+                    char: char === '.' ? ',' : char,
+                    type: type,
+                    reason: reason
+                });
+            }
+
+            if (isNegative) {
+                items.unshift({
+                    char: '-',
+                    type: 'symbol',
+                    reason: 'Tanda minus (-): Menunjukkan nilai negatif.'
+                });
+            }
+
+            return items;
+        }
+
+        function renderInspectorDigitBreakdown(numStr, isSci = false, sciN = '') {
+            const container = document.getElementById('inspector-digit-breakdown-container');
+            const row = document.getElementById('inspector-digits-row');
+            const detailBox = document.getElementById('inspector-digit-detail');
+
+            if (!numStr.trim()) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            row.innerHTML = '';
+            detailBox.className = "bg-white p-4 rounded-xl border-2 border-black text-base font-bold text-gray-800 transition-all min-h-[60px] flex items-center justify-center";
+            detailBox.innerHTML = '<i class="fa-solid fa-hand-pointer text-[var(--primary)] mr-2"></i> Klik salah satu digit di atas untuk melihat penjelasannya!';
+
+            const digitsData = getDigitAnalysisList(numStr);
+
+            if (digitsData.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            digitsData.forEach((item) => {
+                if (item.type === 'decimal' || item.type === 'symbol') {
+                    let span = document.createElement('span');
+                    span.className = 'text-3xl font-black px-1 text-black select-none cursor-pointer hover:text-[var(--primary)]';
+                    span.innerText = item.char;
+                    span.onclick = () => showDigitDetail(item);
+                    row.appendChild(span);
+                } else {
+                    let btn = document.createElement('button');
+                    btn.className = `interactive-digit ${item.type === 'ap' ? 'digit-ap' : 'digit-bukan-ap'}`;
+                    btn.innerText = item.char;
+                    btn.onclick = function() {
+                        document.querySelectorAll('#inspector-digits-row .interactive-digit').forEach(b => b.classList.remove('ring-4', 'ring-black', 'scale-110'));
+                        btn.classList.add('ring-4', 'ring-black', 'scale-110');
+                        showDigitDetail(item);
+                    };
+                    row.appendChild(btn);
+                }
+            });
+
+            if (isSci && sciN !== '') {
+                let sciSpan = document.createElement('span');
+                sciSpan.className = 'text-xl font-black text-gray-700 bg-gray-200 px-3 py-1 rounded-xl border-2 border-black ml-2 cursor-pointer hover:bg-yellow-200';
+                sciSpan.innerText = `x 10^${sciN}`;
+                sciSpan.onclick = () => {
+                    clickSound();
+                    detailBox.className = "bg-yellow-100 p-4 rounded-xl border-2 border-black text-base font-bold text-yellow-900 transition-all min-h-[60px] flex flex-col items-center justify-center text-center";
+                    detailBox.innerHTML = `<span><b>Notasi Ilmiah (10<sup>${sciN}</sup>):</b> Orde sepuluh tidak dihitung dalam Angka Penting. AP hanya ditentukan oleh bagian 'a' (${numStr}).</span>`;
+                };
+                row.appendChild(sciSpan);
+            }
+        }
+
+        function showDigitDetail(item) {
+            clickSound();
+            vibrate(20);
+            const detailBox = document.getElementById('inspector-digit-detail');
+
+            if (item.type === 'ap') {
+                detailBox.className = "bg-green-100 p-4 rounded-xl border-2 border-green-800 text-base font-bold text-green-900 transition-all min-h-[60px] flex flex-col items-center justify-center text-center";
+                detailBox.innerHTML = `<span class="bg-green-600 text-white px-3 py-0.5 rounded-full text-xs font-black mb-1">ANGKA PENTING</span><span>Digit '<b>${item.char}</b>': ${item.reason}</span>`;
+            } else if (item.type === 'bukan-ap') {
+                detailBox.className = "bg-red-100 p-4 rounded-xl border-2 border-red-800 text-base font-bold text-red-900 transition-all min-h-[60px] flex flex-col items-center justify-center text-center";
+                detailBox.innerHTML = `<span class="bg-red-600 text-white px-3 py-0.5 rounded-full text-xs font-black mb-1">BUKAN ANGKA PENTING</span><span>Digit '<b>${item.char}</b>': ${item.reason}</span>`;
+            } else {
+                detailBox.className = "bg-gray-100 p-4 rounded-xl border-2 border-black text-base font-bold text-gray-900 transition-all min-h-[60px] flex flex-col items-center justify-center text-center";
+                detailBox.innerHTML = `<span>'<b>${item.char}</b>': ${item.reason}</span>`;
+            }
+        }
+
+        let currentChallengeData = null;
+        const challengePool = [
+            "0.00450", "120.0", "1500", "0.0005", "10.050", "2.50 x 10^3", 
+            "0.02030", "25.040", "0.0400", "300", "0.00102", "14.947", "200.00"
+        ];
+
+        function generateInspectorChallenge() {
+            clickSound();
+            const challengeBox = document.getElementById('inspector-challenge-box');
+            const numDisplay = document.getElementById('challenge-number-display');
+            const feedback = document.getElementById('challenge-feedback');
+            const input = document.getElementById('challenge-user-input');
+
+            const randomPick = challengePool[Math.floor(Math.random() * challengePool.length)];
+            
+            let apCount = 0;
+            if(randomPick.includes('x 10^')) {
+                const parts = randomPick.split('x');
+                apCount = countSignificantFigures(parts[0]).count;
+            } else {
+                apCount = countSignificantFigures(randomPick).count;
+            }
+
+            currentChallengeData = { numberStr: randomPick, correctAP: apCount };
+            numDisplay.innerText = randomPick;
+            input.value = '';
+            feedback.classList.add('hidden');
+            challengeBox.classList.remove('hidden');
+            popSound();
+        }
+
+        function checkChallengeAnswer() {
+            if(!currentChallengeData) return;
+            const inputVal = document.getElementById('challenge-user-input').value.trim();
+            const feedback = document.getElementById('challenge-feedback');
+
+            if(inputVal === '') {
+                Swal.fire({ icon: 'warning', title: 'Isi Jawaban!', text: 'Masukkan tebakan jumlah angka pentingmu.' });
+                return;
+            }
+
+            const userAns = parseInt(inputVal);
+            feedback.classList.remove('hidden');
+
+            if(userAns === currentChallengeData.correctAP) {
+                successSound();
+                vibrate([30, 50, 30]);
+                feedback.className = "mt-4 p-3 rounded-xl border-4 border-black font-black text-base bg-green-100 text-green-900";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check text-green-600 mr-1 text-xl"></i> TEPAT sekali! Bilangan <b>${currentChallengeData.numberStr}</b> memiliki <b>${currentChallengeData.correctAP}</b> Angka Penting. 🎉`;
+            } else {
+                failSound();
+                vibrate(50);
+                feedback.className = "mt-4 p-3 rounded-xl border-4 border-black font-black text-base bg-red-100 text-red-900";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-600 mr-1 text-xl"></i> Kurang tepat! Bilangan <b>${currentChallengeData.numberStr}</b> sebenarnya memiliki <b>${currentChallengeData.correctAP}</b> Angka Penting. Coba lagi!`;
+            }
+        }
+
+        // 3. LATIHAN SOAL (QUIZ) & APPS SCRIPT INTEGRATION
+        const quizDB = [
+            {q: "Berapa banyak angka penting pada 0,00450?", opts: ["2", "3", "4", "5"], a: 1},
+            {q: "Hasil dari 1,23 + 4,5 berdasarkan aturan angka penting adalah...", opts: ["5,73", "5,7", "5,8", "6"], a: 1},
+            {q: "Bilangan 1500 memiliki berapa angka penting (tanpa tanda khusus)?", opts: ["4", "3", "2", "1"], a: 2},
+            {q: "Hasil kali 2,5 x 3,14 berdasarkan aturan angka penting adalah...", opts: ["7,85", "7,8", "7,9", "8"], a: 1},
+            {q: "Berapa banyak angka penting pada 10,050?", opts: ["3", "4", "5", "6"], a: 2},
+            {q: "Hasil dari 12,5 / 2,0 berdasarkan AP adalah...", opts: ["6,25", "6,2", "6,3", "6"], a: 2},
+            {q: "Bilangan 0,0005 hanya memiliki ... angka penting.", opts: ["1", "2", "3", "4"], a: 0},
+            {q: "Sebuah persegi panjang panjangnya 10,5 cm dan lebar 2,5 cm. Luasnya menurut AP adalah...", opts: ["26,25 cm²", "26,2 cm²", "26 cm²", "26,3 cm²"], a: 2},
+            {q: "Manakah yang memiliki 4 angka penting?", opts: ["0,0400", "4000", "4,050", "0,405"], a: 2},
+            {q: "Pengukuran 25,040 g memiliki jumlah AP sebanyak...", opts: ["3", "4", "5", "2"], a: 2},
+            {q: "Hasil dari 100,2 - 99,55 adalah...", opts: ["0,65", "0,6", "0,7", "1"], a: 2},
+            {q: "Berapa angka penting dalam 3,00 x 10^8?", opts: ["1", "2", "3", "9"], a: 2},
+            {q: "Pengukuran 0,02030 cm memiliki berapa angka penting?", opts: ["3", "4", "5", "6"], a: 1},
+            {q: "Hasil dari (2,5)^2 berdasarkan AP adalah...", opts: ["6,25", "6,2", "6,3", "6"], a: 2},
+            {q: "Manakah yang bukan angka penting pada bilangan 0,050?", opts: ["Nol pertama dan kedua", "Nol kedua dan ketiga", "Angka lima", "Nol di akhir"], a: 0}
+        ];
+
+        let sessionQuestions = [];
+        let currentQIndex = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            let shuffled = [...quizDB].sort(() => 0.5 - Math.random());
+            sessionQuestions = shuffled.slice(0, 10);
+            userAnswers = new Array(10).fill(null);
+            currentQIndex = 0;
+
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('quiz-container').classList.add('flex');
+            
+            buildQuizNav();
+            loadQuestion();
+        }
+
+        function buildQuizNav() {
+            const nav = document.getElementById('quiz-nav');
+            nav.innerHTML = '';
+            for(let i=0; i<10; i++) {
+                let sq = document.createElement('div');
+                sq.className = 'nav-square';
+                sq.innerText = i+1;
+                sq.id = `nav-sq-${i}`;
+                sq.onclick = () => { currentQIndex = i; loadQuestion(); clickSound(); vibrate(10); };
+                nav.appendChild(sq);
+            }
+        }
+
+        function loadQuestion() {
+            const q = sessionQuestions[currentQIndex];
+            document.getElementById('q-number-display').innerText = `Soal ${currentQIndex + 1} / 10`;
+            document.getElementById('question-text').innerText = q.q;
+            
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+            
+            q.opts.forEach((opt, index) => {
+                let btn = document.createElement('div');
+                btn.className = `quiz-option p-4 rounded-xl cursor-pointer text-lg font-semibold bg-gray-50 flex items-center ${userAnswers[currentQIndex] === index ? 'selected' : ''}`;
+                btn.innerHTML = `<span class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center mr-3 bg-white text-gray-500 indicator">${String.fromCharCode(65+index)}</span> ${opt}`;
+                
+                btn.onclick = () => selectOption(index, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            document.querySelectorAll('.nav-square').forEach((el, idx) => {
+                el.classList.remove('current');
+                if(idx === currentQIndex) el.classList.add('current');
+                if(userAnswers[idx] !== null) el.classList.add('answered');
+            });
+
+            document.getElementById('btn-prev').disabled = (currentQIndex === 0);
+            document.getElementById('btn-next').disabled = (currentQIndex === 9);
+        }
+
+        function selectOption(index, btnElem) {
+            userAnswers[currentQIndex] = index;
+            document.querySelectorAll('.quiz-option').forEach(el => {
+                el.classList.remove('selected', 'bg-[var(--success)]', 'border-black');
+                el.classList.add('bg-gray-50', 'border-black');
+                el.querySelector('.indicator').classList.remove('bg-black', 'text-[var(--success)]', 'border-black');
+                el.querySelector('.indicator').classList.add('bg-white', 'text-black', 'border-black');
+            });
+            
+            btnElem.classList.remove('bg-gray-50');
+            btnElem.classList.add('selected', 'bg-[var(--success)]');
+            const ind = btnElem.querySelector('.indicator');
+            ind.classList.remove('bg-white', 'text-black');
+            ind.classList.add('bg-black', 'text-[var(--success)]');
+            
+            popSound();
+            vibrate(15);
+            document.getElementById(`nav-sq-${currentQIndex}`).classList.add('answered');
+        }
+
+        function prevQuestion() { if(currentQIndex > 0) { currentQIndex--; loadQuestion(); } }
+        function nextQuestion() { if(currentQIndex < 9) { currentQIndex++; loadQuestion(); } }
+
+        function confirmResetQuiz() {
+            Swal.fire({
+                title: 'Ulang Kuis?',
+                text: 'Apakah Anda yakin ingin mengulang kuis dari awal?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF3366',
+                cancelButtonColor: '#6B7280',
+                confirmButtonText: 'Ya, Mengulang',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    startQuiz();
+                }
+            });
+        }
+
+        async function finishQuiz() {
+            if(userAnswers.includes(null)) {
+                Swal.fire({ title: 'Tunggu Dulu!', text: 'Masih ada soal yang belum dijawab.', icon: 'warning', confirmButtonColor: '#FF6B6B' });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Yakin Selesai?', text: "Kamu tidak bisa mengubah jawaban lagi.", icon: 'question',
+                showCancelButton: true, confirmButtonColor: '#4ECDC4', cancelButtonColor: '#FF6B6B', confirmButtonText: 'Kirim Jawaban!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    let score = 0;
+                    userAnswers.forEach((ans, idx) => {
+                        if(ans === sessionQuestions[idx].a) score += 10;
+                    });
+
+                    document.getElementById('quiz-container').classList.add('hidden');
+                    document.getElementById('quiz-container').classList.remove('flex');
+                    document.getElementById('quiz-result').classList.remove('hidden');
+                    
+                    let scoreDisplay = document.getElementById('final-score');
+                    let cur = 0;
+                    let timer = setInterval(() => {
+                        cur += 2;
+                        if(cur >= score) { cur = score; clearInterval(timer); }
+                        scoreDisplay.innerText = cur;
+                    }, 20);
+
+                    document.getElementById('result-message').innerText = score >= 70 ? "Luar Biasa, Penjelajah!" : "Terus Berlatih ya!";
+                    if(score >= 70) successSound(); else failSound();
+
+                    // MENGIRIM DATA KUIS KE GOOGLE SHEETS VIA APPS SCRIPT
+                    try {
+                        const payload = {
+                            nama: studentInfo.name,
+                            kelas: studentInfo.class,
+                            skor: score,
+                            waktu: new Date().toLocaleString('id-ID')
+                        };
+
+                        await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                    } catch (err) {
+                        console.error("Gagal mengirim data kuis ke Google Sheets:", err);
+                    }
+                }
+            });
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-intro').classList.remove('hidden');
+        }
+
+        // 4. GAME ENGINE 1: ULAR TANGGA 100 KOTAK
+        let activeGameMode = 'snake';
+        let playerCount = 1;
+        let currentPlayerIndex = 0;
+        let playerPositions = [1, 1, 1, 1];
+        const playerColors = ['#FF3366', '#00CCFF', '#FFCC00', '#00FF66'];
+
+        const snakes = { 98: 79, 95: 75, 87: 24, 64: 60, 62: 19, 54: 34, 17: 7 };
+        const ladders = { 4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 63: 81, 71: 91 };
+
+        function switchGameMode(mode) {
+            activeGameMode = mode;
+            clickSound();
+            if(mode === 'snake') {
+                document.getElementById('btn-mode-snake').classList.replace('bg-gray-200', 'bg-[var(--accent)]');
+                document.getElementById('btn-mode-snake').classList.replace('text-gray-700', 'text-black');
+                document.getElementById('btn-mode-flip').classList.replace('bg-[var(--accent)]', 'bg-gray-200');
+                document.getElementById('btn-mode-flip').classList.replace('text-black', 'text-gray-700');
+
+                document.getElementById('game-snake-container').classList.remove('hidden');
+                document.getElementById('game-flip-container').classList.add('hidden');
+                setTimeout(drawSnakesAndLaddersSVG, 200);
+            } else {
+                document.getElementById('btn-mode-flip').classList.replace('bg-gray-200', 'bg-[var(--accent)]');
+                document.getElementById('btn-mode-flip').classList.replace('text-gray-700', 'text-black');
+                document.getElementById('btn-mode-snake').classList.replace('bg-[var(--accent)]', 'bg-gray-200');
+                document.getElementById('btn-mode-snake').classList.replace('text-black', 'text-gray-700');
+
+                document.getElementById('game-flip-container').classList.remove('hidden');
+                document.getElementById('game-snake-container').classList.add('hidden');
+            }
+        }
+
+        function setPlayerCount(count) {
+            playerCount = count;
+            for(let i=1; i<=4; i++) {
+                const btn = document.getElementById(`btn-p${i}`);
+                if(i === count) btn.classList.replace('bg-gray-200', 'bg-[var(--accent)]');
+                else btn.classList.replace('bg-[var(--accent)]', 'bg-gray-200');
+            }
+            resetSnakeGame();
+        }
+
+        function resetSnakeGame() {
+            playerPositions = [1, 1, 1, 1];
+            currentPlayerIndex = 0;
+            initSnakeGame();
+        }
+
+        function initSnakeGame() {
+            const board = document.getElementById('game-board-100');
+            board.innerHTML = '<svg id="snakes-ladders-svg"></svg>';
+
+            for (let row = 9; row >= 0; row--) {
+                for (let col = 0; col < 10; col++) {
+                    let cellNum = row % 2 === 1 ? row * 10 + (10 - col) : row * 10 + col + 1;
+                    let cell = document.createElement('div');
+                    cell.className = 'board-cell-100';
+                    cell.id = `cell-100-${cellNum}`;
+
+                    let numSpan = document.createElement('span');
+                    numSpan.innerText = cellNum;
+                    cell.appendChild(numSpan);
+
+                    let tokenContainer = document.createElement('div');
+                    tokenContainer.className = 'flex flex-wrap gap-0.5 justify-center items-center';
+                    tokenContainer.id = `tokens-cell-${cellNum}`;
+                    cell.appendChild(tokenContainer);
+
+                    board.appendChild(cell);
+                }
+            }
+
+            updateBoardTokens();
+            updatePlayerStatusUI();
+            setTimeout(drawSnakesAndLaddersSVG, 300);
+        }
+
+        function updateBoardTokens() {
+            for(let i=1; i<=100; i++) {
+                const container = document.getElementById(`tokens-cell-${i}`);
+                if(container) container.innerHTML = '';
+            }
+
+            for(let p=0; p<playerCount; p++) {
+                const pos = playerPositions[p];
+                const container = document.getElementById(`tokens-cell-${pos}`);
+                if(container) {
+                    let token = document.createElement('span');
+                    token.className = 'player-token-node';
+                    token.style.backgroundColor = playerColors[p];
+                    token.title = `Pemain ${p+1}`;
+                    container.appendChild(token);
+                }
+            }
+        }
+
+        function updatePlayerStatusUI() {
+            const container = document.getElementById('player-status-container');
+            container.innerHTML = '';
+            
+            for(let i=0; i<playerCount; i++) {
+                let isCurrent = (i === currentPlayerIndex);
+                let div = document.createElement('div');
+                div.className = `p-3 rounded-xl border-2 border-black flex justify-between items-center ${isCurrent ? 'bg-yellow-200 shadow-[2px_2px_0_0_#000]' : 'bg-gray-50'}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded-full border border-black" style="background-color: ${playerColors[i]}"></span>
+                        <span class="font-black text-black">Pemain ${i+1} ${isCurrent ? '(Giliran)' : ''}</span>
+                    </div>
+                    <span class="font-black text-black">Kotak ${playerPositions[i]}</span>
+                `;
+                container.appendChild(div);
+            }
+
+            document.getElementById('current-turn-badge').innerText = `Giliran: Pemain ${currentPlayerIndex+1}`;
+            document.getElementById('current-turn-badge').style.backgroundColor = playerColors[currentPlayerIndex];
+        }
+
+        let isDiceRolling = false;
+        function rollDice() {
+            if(isDiceRolling) return;
+            isDiceRolling = true;
+            
+            const btn = document.getElementById('btn-roll-dice');
+            const resText = document.getElementById('dice-result-text');
+            btn.disabled = true;
+
+            let count = 0;
+            let interval = setInterval(() => {
+                let randomRoll = Math.floor(Math.random() * 6) + 1;
+                resText.innerText = `Dadu: ${randomRoll}`;
+                count++;
+                if(count > 10) {
+                    clearInterval(interval);
+                    let finalRoll = Math.floor(Math.random() * 6) + 1;
+                    resText.innerText = `Dadu: ${finalRoll}`;
+                    popSound();
+                    
+                    setTimeout(() => movePlayerSnake(finalRoll), 500);
+                }
+            }, 80);
+        }
+
+        function movePlayerSnake(steps) {
+            let currentPos = playerPositions[currentPlayerIndex];
+            let newPos = currentPos + steps;
+
+            if(newPos > 100) newPos = 100 - (newPos - 100);
+
+            playerPositions[currentPlayerIndex] = newPos;
+            updateBoardTokens();
+            updatePlayerStatusUI();
+
+            if(newPos === 100) {
+                successSound();
+                Swal.fire({ title: 'SELAMAT!', text: `Pemain ${currentPlayerIndex+1} Menang! 🎉`, icon: 'success' });
+                isDiceRolling = false;
+                document.getElementById('btn-roll-dice').disabled = false;
+                return;
+            }
+
+            setTimeout(() => triggerChallengeQuestion(), 600);
+        }
+
+        function triggerChallengeQuestion() {
+            const randomQ = quizDB[Math.floor(Math.random() * quizDB.length)];
+            
+            Swal.fire({
+                title: `Tantangan Pemain ${currentPlayerIndex+1}!`,
+                html: `<p class="font-bold text-lg text-black mb-4">${randomQ.q}</p>`,
+                input: 'radio',
+                inputOptions: randomQ.opts.reduce((acc, opt, i) => { acc[i] = opt; return acc; }, {}),
+                inputValidator: (value) => { if (!value) return 'Pilih salah satu jawaban!'; },
+                showCancelButton: false,
+                confirmButtonText: 'Jawab',
+                allowOutsideClick: false
+            }).then((result) => {
+                let chosen = parseInt(result.value);
+                let isCorrect = (chosen === randomQ.a);
+                spinAdjustmentWheel(isCorrect);
+            });
+        }
+
+        function spinAdjustmentWheel(isCorrect) {
+            const wheel = document.getElementById('spinner-wheel');
+            const resText = document.getElementById('spinner-result');
+            
+            let extraSteps = Math.floor(Math.random() * 3) + 1;
+            let rotations = 4 * 360 + (extraSteps * 120);
+
+            wheel.style.transform = `rotate(${rotations}deg)`;
+
+            setTimeout(() => {
+                resText.innerText = isCorrect ? `+${extraSteps}` : `-${extraSteps}`;
+                let curPos = playerPositions[currentPlayerIndex];
+
+                if(isCorrect) {
+                    successSound();
+                    curPos = Math.min(100, curPos + extraSteps);
+                    Swal.fire({ title: 'BENAR!', text: `Maju +${extraSteps} langkah bonus!`, icon: 'success', timer: 1500, showConfirmButton: false });
+                } else {
+                    failSound();
+                    curPos = Math.max(1, curPos - extraSteps);
+                    Swal.fire({ title: 'SALAH!', text: `Mundur -${extraSteps} langkah penalti!`, icon: 'error', timer: 1500, showConfirmButton: false });
+                }
+
+                if(snakes[curPos]) {
+                    failSound();
+                    let slidePos = snakes[curPos];
+                    Swal.fire({ title: 'SNAKE!', text: `Aduh! Terpeleset Ular ke Kotak ${slidePos}!`, icon: 'warning', timer: 2000, showConfirmButton: false });
+                    curPos = slidePos;
+                } else if(ladders[curPos]) {
+                    successSound();
+                    let climbPos = ladders[curPos];
+                    Swal.fire({ title: 'LADDER!', text: `Hore! Panjat Tangga ke Kotak ${climbPos}!`, icon: 'success', timer: 2000, showConfirmButton: false });
+                    curPos = climbPos;
+                }
+
+                playerPositions[currentPlayerIndex] = curPos;
+                updateBoardTokens();
+
+                currentPlayerIndex = (currentPlayerIndex + 1) % playerCount;
+                updatePlayerStatusUI();
+
+                isDiceRolling = false;
+                document.getElementById('btn-roll-dice').disabled = false;
+                document.getElementById('dice-result-text').innerText = 'Lempar Dadu!';
+            }, 2600);
+        }
+
+        function drawSnakesAndLaddersSVG() {
+            const svg = document.getElementById('snakes-ladders-svg');
+            const board = document.getElementById('game-board-100');
+            if(!svg || !board) return;
+
+            const boardRect = board.getBoundingClientRect();
+            svg.setAttribute('viewBox', `0 0 ${boardRect.width} ${boardRect.height}`);
+            svg.innerHTML = '';
+
+            const getCellCenter = (num) => {
+                const cell = document.getElementById(`cell-100-${num}`);
+                if(!cell) return {x:0, y:0};
+                const rect = cell.getBoundingClientRect();
+                return {
+                    x: rect.left - boardRect.left + rect.width / 2,
+                    y: rect.top - boardRect.top + rect.height / 2
+                };
+            };
+
+            for(let bottom in ladders) {
+                let top = ladders[bottom];
+                let p1 = getCellCenter(bottom);
+                let p2 = getCellCenter(top);
+
+                let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", p1.x); line.setAttribute("y1", p1.y);
+                line.setAttribute("x2", p2.x); line.setAttribute("y2", p2.y);
+                line.setAttribute("stroke", "#10B981");
+                line.setAttribute("stroke-width", "6");
+                line.setAttribute("stroke-dasharray", "8, 4");
+                line.setAttribute("stroke-linecap", "round");
+                svg.appendChild(line);
+            }
+
+            for(let head in snakes) {
+                let tail = snakes[head];
+                let p1 = getCellCenter(head);
+                let p2 = getCellCenter(tail);
+
+                let midX = (p1.x + p2.x) / 2 + 20;
+                let midY = (p1.y + p2.y) / 2 - 20;
+
+                let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                let d = `M ${p1.x} ${p1.y} Q ${midX} ${midY} ${p2.x} ${p2.y}`;
+                path.setAttribute("d", d);
+                path.setAttribute("stroke", "#EF4444");
+                path.setAttribute("stroke-width", "5");
+                path.setAttribute("fill", "none");
+                path.setAttribute("stroke-linecap", "round");
+                svg.appendChild(path);
+            }
+        }
+
+        // 5. GAME ENGINE 2: FLIP CARD MATCHING GAME
+        const flipDeckData = [
+            { id: 1, text: "12,5 + 1,23", matchId: 1, matchText: "13,7" },
+            { id: 2, text: "100,2 - 99,55", matchId: 2, matchText: "0,6" },
+            { id: 3, text: "14,947 (3 AP)", matchId: 3, matchText: "14,9" },
+            { id: 4, text: "14,947 (2 AP)", matchId: 4, matchText: "15" },
+            { id: 5, text: "2,46 (2 AP)", matchId: 5, matchText: "2,5" },
+            { id: 6, text: "2,43 (2 AP)", matchId: 6, matchText: "2,4" }
+        ];
+
+        let flipCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let flipMoves = 0;
+
+        function initFlipGame() {
+            matchedPairs = 0;
+            flipMoves = 0;
+            flippedCards = [];
+            document.getElementById('flip-moves').innerText = '0';
+
+            let cardsArr = [];
+            flipDeckData.forEach(item => {
+                cardsArr.push({ id: item.id, type: 'q', content: item.text, matchId: item.id });
+                cardsArr.push({ id: item.id, type: 'a', content: item.matchText, matchId: item.id });
+            });
+
+            flipCards = cardsArr.sort(() => 0.5 - Math.random());
+
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+
+            flipCards.forEach((card, index) => {
+                let cardEl = document.createElement('div');
+                cardEl.className = 'memory-card';
+                cardEl.dataset.index = index;
+                cardEl.innerHTML = `
+                    <div class="memory-card-inner">
+                        <div class="memory-card-front"><i class="fa-solid fa-question"></i></div>
+                        <div class="memory-card-back">${card.content}</div>
+                    </div>
+                `;
+                cardEl.onclick = () => flipCard(cardEl, index);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard(cardEl, index) {
+            if (flippedCards.length >= 2 || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+            popSound();
+            cardEl.classList.add('flipped');
+            flippedCards.push({ element: cardEl, data: flipCards[index] });
+
+            if (flippedCards.length === 2) {
+                flipMoves++;
+                document.getElementById('flip-moves').innerText = flipMoves;
+
+                let [card1, card2] = flippedCards;
+                if (card1.data.matchId === card2.data.matchId && card1.data.type !== card2.data.type) {
+                    successSound();
+                    vibrate([30, 50, 30]);
+                    card1.element.classList.add('matched');
+                    card2.element.classList.add('matched');
+                    flippedCards = [];
+                    matchedPairs++;
+
+                    if (matchedPairs === flipDeckData.length) {
+                        setTimeout(() => {
+                            Swal.fire({
+                                title: 'SELAMAT!',
+                                text: `Kamu menyelesaikan game flip card dalam ${flipMoves} percobaan! 🎉`,
+                                icon: 'success'
+                            });
+                        }, 500);
+                    }
+                } else {
+                    failSound();
+                    vibrate(40);
+                    setTimeout(() => {
+                        card1.element.classList.remove('flipped');
+                        card2.element.classList.remove('flipped');
+                        flippedCards = [];
+                    }, 1000);
+                }
+            }
+        }
+
+        // 6. KALKULATOR ANGKA PENTING LOGIC
+        function setCalcOp(op) {
+            activeOp = op;
+            clickSound();
+            document.querySelectorAll('.calc-op-btn').forEach(btn => {
+                btn.classList.remove('bg-[var(--primary)]', 'text-white');
+                btn.classList.add('bg-white', 'text-black');
+            });
+            let btnId = op === '+' ? 'btn-op-add' : op === '-' ? 'btn-op-sub' : op === 'x' ? 'btn-op-mul' : 'btn-op-div';
+            const selBtn = document.getElementById(btnId);
+            if(selBtn) {
+                selBtn.classList.remove('bg-white', 'text-black');
+                selBtn.classList.add('bg-[var(--primary)]', 'text-white');
+            }
+        }
+
+        function countDecimals(numStr) {
+            if (!numStr.includes('.')) return 0;
+            return numStr.split('.')[1].length;
+        }
+
+        function calculateAP() {
+            clickSound();
+            const val1Str = document.getElementById('calc-val1').value.trim();
+            const val2Str = document.getElementById('calc-val2').value.trim();
+            const resRaw = document.getElementById('calc-raw-result');
+            const resAP = document.getElementById('calc-result');
+            const explanation = document.getElementById('calc-explanation');
+            const ap1Display = document.getElementById('calc-ap1');
+            const ap2Display = document.getElementById('calc-ap2');
+
+            if (!val1Str || !val2Str) {
+                Swal.fire({ icon: 'warning', title: 'Input Belum Lengkap', text: 'Masukkan kedua bilangan terlebih dahulu!' });
+                return;
+            }
+
+            const num1 = parseFloat(val1Str);
+            const num2 = parseFloat(val2Str);
+
+            if (isNaN(num1) || isNaN(num2)) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Input angka tidak valid!' });
+                return;
+            }
+
+            const ap1 = countSignificantFigures(val1Str).count;
+            const ap2 = countSignificantFigures(val2Str).count;
+            const dec1 = countDecimals(val1Str);
+            const dec2 = countDecimals(val2Str);
+
+            ap1Display.innerText = `${ap1} Angka Penting (${dec1} desimal)`;
+            ap2Display.innerText = `${ap2} Angka Penting (${dec2} desimal)`;
+
+            let rawVal = 0;
+            let finalResultStr = "";
+            let expText = "";
+
+            if (activeOp === '+') {
+                rawVal = num1 + num2;
+                let minDec = Math.min(dec1, dec2);
+                finalResultStr = rawVal.toFixed(minDec);
+                expText = `Penjumlahan: Hasil mengikuti jumlah desimal paling sedikit (${minDec} desimal).`;
+            } else if (activeOp === '-') {
+                rawVal = num1 - num2;
+                let minDec = Math.min(dec1, dec2);
+                finalResultStr = rawVal.toFixed(minDec);
+                expText = `Pengurangan: Hasil mengikuti jumlah desimal paling sedikit (${minDec} desimal).`;
+            } else if (activeOp === 'x') {
+                rawVal = num1 * num2;
+                let minAP = Math.min(ap1, ap2);
+                finalResultStr = Number(rawVal.toPrecision(minAP)).toString();
+                expText = `Perkalian: Hasil memiliki jumlah AP paling sedikit (${minAP} AP).`;
+            } else if (activeOp === '/') {
+                if (num2 === 0) {
+                    resRaw.innerText = 'Tidak terdefinisi';
+                    resAP.innerText = 'Err';
+                    explanation.innerText = 'Pembagian dengan nol tidak diperbolehkan!';
+                    return;
+                }
+                rawVal = num1 / num2;
+                let minAP = Math.min(ap1, ap2);
+                finalResultStr = Number(rawVal.toPrecision(minAP)).toString();
+                expText = `Pembagian: Hasil memiliki jumlah AP paling sedikit (${minAP} AP).`;
+            }
+
+            resRaw.innerText = rawVal.toString().replace('.', ',');
+            resAP.innerText = finalResultStr.replace('.', ',');
+            explanation.innerText = expText;
+            successSound();
+        }
+    </script>
+</body>
+</html>
